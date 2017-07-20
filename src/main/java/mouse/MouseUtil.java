@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 public class MouseUtil {
 
   private static Logger log = org.slf4j.LoggerFactory.getLogger(MouseUtil.class);
+  // 等待时间
   public static int waitTimeMils = 500000;
 
   protected static ExecutorService executePool = new ThreadPoolExecutor(24, 24, 60L,

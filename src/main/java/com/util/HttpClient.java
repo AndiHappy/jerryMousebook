@@ -1,5 +1,17 @@
 package com.util;
 
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.nio.charset.CodingErrorAction;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
+
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
+
 import org.apache.http.Consts;
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
@@ -10,12 +22,15 @@ import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
-import org.apache.http.config.*;
+import org.apache.http.config.ConnectionConfig;
+import org.apache.http.config.MessageConstraints;
+import org.apache.http.config.Registry;
+import org.apache.http.config.RegistryBuilder;
+import org.apache.http.config.SocketConfig;
 import org.apache.http.conn.HttpClientConnectionManager;
 import org.apache.http.conn.socket.ConnectionSocketFactory;
 import org.apache.http.conn.socket.PlainConnectionSocketFactory;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
-import org.apache.http.conn.ssl.SSLContexts;
 import org.apache.http.conn.ssl.TrustSelfSignedStrategy;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
@@ -27,48 +42,32 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
-import javax.net.ssl.SSLContext;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import java.nio.charset.CodingErrorAction;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.TimeUnit;
-
 @Component
 public class HttpClient {
   private final static Logger logger = LoggerFactory.getLogger(HttpClient.class);
   private static CloseableHttpClient closeablehttpclient = null;
   private static IdleConnectionMonitorThread scanThread = null;
-  private final static int socketTimeout = 10000;  //响应超时时间，超过此时间不再读取响应；
-  private final static int connectTimeout = 2000;   //链接建立的超时时间
-  private final static int connectionRequestTimeout = 5000;
-    //http clilent从connetcion pool中获得一个connection的超时时间
+  private final static int socketTimeout = 10000; // 响应超时时间
+  private final static int connectTimeout = 2000; // 链接建立的超时时间
+  private final static int connectionRequestTimeout = 5000;// 拿到一个连接的时间
   private final static int maxTotal = 800;
   private final static int maxPerRoute = 200;
 
-  public  HttpClient(){
-      init();
+  public HttpClient() {
+    init();
   }
 
   @PostConstruct
   public static void init() {
     try {
 
-        SSLContextBuilder builder = new SSLContextBuilder();
-
-        builder.loadTrustMaterial(null, new TrustSelfSignedStrategy());
-        SSLConnectionSocketFactory sslsf = new SSLConnectionSocketFactory(
-                builder.build());
-
-        // 配置同时支持 HTTP 和 HTPPS
-        Registry<ConnectionSocketFactory> socketFactoryRegistry = RegistryBuilder.<ConnectionSocketFactory> create().register(
-                "http", PlainConnectionSocketFactory.getSocketFactory()).register(
-                "https", sslsf).build();
+      SSLContextBuilder builder = new SSLContextBuilder();
+      builder.loadTrustMaterial(null, new TrustSelfSignedStrategy());
+      SSLConnectionSocketFactory sslsf = new SSLConnectionSocketFactory(builder.build());
+      // 配置同时支持 HTTP 和 HTPPS
+      Registry<ConnectionSocketFactory> socketFactoryRegistry = RegistryBuilder
+          .<ConnectionSocketFactory> create().register("http", PlainConnectionSocketFactory
+              .getSocketFactory()).register("https", sslsf).build();
 
       PoolingHttpClientConnectionManager poolManager = new PoolingHttpClientConnectionManager(
           socketFactoryRegistry);
@@ -82,11 +81,10 @@ public class HttpClient {
       // Create connection configuration
       ConnectionConfig connectionConfig = ConnectionConfig.custom().setMalformedInputAction(
           CodingErrorAction.IGNORE).setUnmappableInputAction(CodingErrorAction.IGNORE).setCharset(
-          Consts.UTF_8).setMessageConstraints(messageConstraints).build();
+              Consts.UTF_8).setMessageConstraints(messageConstraints).build();
       poolManager.setDefaultConnectionConfig(connectionConfig);
       poolManager.setMaxTotal(maxTotal);
       poolManager.setDefaultMaxPerRoute(maxPerRoute);
-      //扫描线程，关闭无效链接
       scanThread = new IdleConnectionMonitorThread(poolManager);
       scanThread.start();
       logger.info("httpclint pool init ok---------");
@@ -112,10 +110,8 @@ public class HttpClient {
     logger.info("httpclint pool close ok---------");
   }
 
-  
-
   public static String httpPost(String url, int socketTimeout, int connectionRequestTimeout,
-		  List<NameValuePair> paramList,String encoding) throws Exception {
+      List<NameValuePair> paramList, String encoding) throws Exception {
     HttpPost post = new HttpPost(url);
     CloseableHttpResponse response = null;
     HttpEntity entity = null;
@@ -125,7 +121,7 @@ public class HttpClient {
           .setConnectTimeout(connectTimeout).setConnectionRequestTimeout(connectionRequestTimeout)
           .setExpectContinueEnabled(false).build();
       post.setConfig(requestConfig);
-      post.setEntity(new UrlEncodedFormEntity(paramList,Consts.UTF_8));
+      post.setEntity(new UrlEncodedFormEntity(paramList, Consts.UTF_8));
       logger.info("httpPost invoke url:" + url + " , params:" + paramList);
       response = closeablehttpclient.execute(post);
       entity = response.getEntity();
@@ -148,8 +144,7 @@ public class HttpClient {
   }
 
   public static String httpPost(String url, int socketTimeout, int connectionRequestTimeout,
-	List<NameValuePair> paramList, Header header,
-      String encoding) throws Exception {
+      List<NameValuePair> paramList, Header header, String encoding) throws Exception {
     HttpPost post = new HttpPost(url);
     CloseableHttpResponse response = null;
     HttpEntity entity = null;
@@ -159,8 +154,8 @@ public class HttpClient {
           .setConnectTimeout(connectTimeout).setConnectionRequestTimeout(connectionRequestTimeout)
           .setExpectContinueEnabled(false).build();
       post.setConfig(requestConfig);
-      
-      post.setEntity(new UrlEncodedFormEntity(paramList,Consts.UTF_8));
+
+      post.setEntity(new UrlEncodedFormEntity(paramList, Consts.UTF_8));
       logger.info("httpPost invoke url:" + url + " , params:" + paramList);
       response = closeablehttpclient.execute(post);
       entity = response.getEntity();
@@ -183,8 +178,8 @@ public class HttpClient {
   }
 
   public static String httpPost(String url, int socketTimeout, int connectionRequestTimeout,
-		  List<NameValuePair> paramList, Map<String, String> headerMap,
-      String encoding) throws Exception {
+      List<NameValuePair> paramList, Map<String, String> headerMap, String encoding)
+      throws Exception {
     HttpPost post = new HttpPost(url);
     CloseableHttpResponse response = null;
     HttpEntity entity = null;
@@ -198,7 +193,7 @@ public class HttpClient {
           .setConnectTimeout(connectTimeout).setConnectionRequestTimeout(connectionRequestTimeout)
           .setExpectContinueEnabled(false).build();
       post.setConfig(requestConfig);
-      post.setEntity(new UrlEncodedFormEntity(paramList,Consts.UTF_8));
+      post.setEntity(new UrlEncodedFormEntity(paramList, Consts.UTF_8));
       logger.info("httpPost invoke url:" + url + " , params:" + paramList);
       response = closeablehttpclient.execute(post);
       entity = response.getEntity();
@@ -220,8 +215,8 @@ public class HttpClient {
 
   }
 
-  public static String httpPost(String url, List<NameValuePair> paramList,
-      String encoding) throws Exception {
+  public static String httpPost(String url, List<NameValuePair> paramList, String encoding)
+      throws Exception {
     return httpPost(url, socketTimeout, connectionRequestTimeout, paramList, encoding);
   }
 
@@ -231,17 +226,18 @@ public class HttpClient {
 
   public static String httpPost(String url, List<NameValuePair> paramList, Header header)
       throws Exception {
-    return httpPost(url, socketTimeout, connectionRequestTimeout, paramList, header, Consts.UTF_8.name());
+    return httpPost(url, socketTimeout, connectionRequestTimeout, paramList, header, Consts.UTF_8
+        .name());
   }
 
-  public static String httpPost(String url, List<NameValuePair> paramList, Map headerMap)
-      throws Exception {
-    return httpPost(url, socketTimeout, connectionRequestTimeout, paramList, headerMap,
-        Consts.UTF_8.name());
+  public static String httpPost(String url, List<NameValuePair> paramList,
+      Map<String, String> headerMap) throws Exception {
+    return httpPost(url, socketTimeout, connectionRequestTimeout, paramList, headerMap, Consts.UTF_8
+        .name());
   }
 
-  public static String httpGet(String url, List<NameValuePair> paramList,
-      int socketTimeout, int connectionRequestTimeout, String encode) throws Exception {
+  public static String httpGet(String url, List<NameValuePair> paramList, int socketTimeout,
+      int connectionRequestTimeout, String encode) throws Exception {
     String responseString = null;
     CloseableHttpResponse response = null;
     HttpEntity entity = null;
@@ -251,24 +247,24 @@ public class HttpClient {
     StringBuilder sb = new StringBuilder();
     sb.append(url);
     int i = 0;
-    if(paramList != null && !paramList.isEmpty()) {
-        for (NameValuePair nameValuePair : paramList) {
-            if (i == 0 && !url.contains("?")) {
-                sb.append("?");
-            } else {
-                sb.append("&");
-            }
-            sb.append(nameValuePair.getName());
-            sb.append("=");
-            String value = nameValuePair.getValue();
-            try {
-                sb.append(URLEncoder.encode(value, "UTF-8"));
-            } catch (UnsupportedEncodingException e) {
-                logger.warn("encode http get params error, value is " + value, e);
-                sb.append(URLEncoder.encode(value));
-            }
-            i++;
+    if (paramList != null && !paramList.isEmpty()) {
+      for (NameValuePair nameValuePair : paramList) {
+        if (i == 0 && !url.contains("?")) {
+          sb.append("?");
+        } else {
+          sb.append("&");
         }
+        sb.append(nameValuePair.getName());
+        sb.append("=");
+        String value = nameValuePair.getValue();
+        try {
+          sb.append(URLEncoder.encode(value, "UTF-8"));
+        } catch (UnsupportedEncodingException e) {
+          logger.warn("encode http get params error, value is " + value, e);
+          sb.append(URLEncoder.encode(value));
+        }
+        i++;
+      }
     }
     logger.info("invokeGet begin invoke:" + sb.toString());
     HttpGet get = new HttpGet(sb.toString());
@@ -293,24 +289,15 @@ public class HttpClient {
   }
 
   public static String httpGet(String url, List<NameValuePair> paramList) throws Exception {
-    return httpGet(url, paramList, socketTimeout, connectionRequestTimeout, Consts.UTF_8.toString());
+    return httpGet(url, paramList, socketTimeout, connectionRequestTimeout, Consts.UTF_8
+        .toString());
   }
 
-  public static String httpGet(String url, List<NameValuePair> paramList,
-      int socketTimeout, int connectionRequestTimeout) throws Exception {
-    return httpGet(url, paramList, socketTimeout, connectionRequestTimeout, Consts.UTF_8.toString());
+  public static String httpGet(String url, List<NameValuePair> paramList, int socketTimeout,
+      int connectionRequestTimeout) throws Exception {
+    return httpGet(url, paramList, socketTimeout, connectionRequestTimeout, Consts.UTF_8
+        .toString());
   }
-
-  /**
-   *
-   * HTTPS请求，默认超时为5S
-   *
-   * @param reqURL
-   *
-   * @param params
-   *
-   * @return
-   */
 
   public static String connectPostHttps(String reqURL, Map<String, String> params) {
     String responseContent = null;
@@ -376,7 +363,6 @@ public class HttpClient {
             connMgr.closeExpiredConnections();
             // 可选, 关闭空闲超过30秒的
             connMgr.closeIdleConnections(30, TimeUnit.SECONDS);
-//            logger.info("closeExpiredConnections----- ");
             scanThread.wait(5000);
           } catch (Exception e) {
             logger.error("IdleConnectionMonitorThread", e);
@@ -391,7 +377,6 @@ public class HttpClient {
         scanThread.notifyAll();
       }
     }
-
   }
 
 }

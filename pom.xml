@@ -36,19 +36,16 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
-		
-		<dependency>
-			<groupId>org.apache.httpcomponents</groupId>
-			<artifactId>httpclient</artifactId>
-		</dependency>
+
 
 		<!--执行页面加载 -->
 		<!-- https://mvnrepository.com/artifact/net.sourceforge.htmlunit/htmlunit -->
-		<!-- <dependency>
+		<dependency>
 			<groupId>net.sourceforge.htmlunit</groupId>
 			<artifactId>htmlunit</artifactId>
 			<version>2.13</version>
-		</dependency> -->
+		</dependency>
+
 
 		<!--spring-boot 数据模板展示html -->
 		<dependency>
@@ -57,11 +54,8 @@
 		</dependency>
 
 		<!-- 爬虫的框架 -->
-		<!-- <dependency>
-			<groupId>cn.edu.hfut.dmic.webcollector</groupId>
-			<artifactId>WebCollector</artifactId>
-			<version>2.52</version>
-		</dependency> -->
+		<!-- <dependency> <groupId>cn.edu.hfut.dmic.webcollector</groupId> <artifactId>WebCollector</artifactId> 
+			<version>2.52</version> </dependency> -->
 
 		<!-- 解析html后的数据 -->
 		<!-- https://mvnrepository.com/artifact/org.jsoup/jsoup -->
@@ -80,6 +74,12 @@
 			<artifactId>selenium-java</artifactId>
 			<version>2.44.0</version>
 			<scope>provided</scope>
+			<exclusions>
+				<exclusion>
+					<groupId>org.apache.httpcomponents</groupId>
+					<artifactId>httpclient</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 
 	</dependencies>
