@@ -4,7 +4,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
 
+import com.exception.MyException;
 import com.util.ConfigCenter;
 
 @Controller
@@ -12,7 +14,6 @@ public class SampleController {
 
   private ConfigCenter configCenter;
 
-  @RequestMapping("/")
   /**
    * @ResponseBody 这个标注影响着：
    *               URL handler的选择
@@ -24,6 +25,7 @@ public class SampleController {
    *               影响的方法名称是：
    *               org.springframework.web.method.support.HandlerMethodReturnValueHandlerComposite.selectHandler(Object, MethodParameter)
    */
+  @RequestMapping("/")
   public String home(ModelMap map) {
     map.addAttribute("host", "http://github.com");
     return "index";
@@ -31,8 +33,23 @@ public class SampleController {
 
   @RequestMapping("/hello")
   public String hello() {
+    return "index";
+  }
 
-    return "Hello World!";
+  /**
+   * 统一的错误处理机制
+   * */
+  @RequestMapping("/error1")
+  public ModelAndView generalError() throws Exception {
+    throw new Exception("发生错误");
+  }
+
+  /**
+   * 个性化的错误处理
+   * */
+  @RequestMapping("/error2")
+  public String specialError() throws MyException {
+    throw new MyException("发生错误2");
   }
 
   @RequestMapping("/config")

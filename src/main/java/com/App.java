@@ -10,10 +10,10 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  *
  */
 
-@SpringBootApplication
 /**
  * @SpringBootApplication 配置的启示
  * */
+@SpringBootApplication
 public class App {
 
   public static void main(String[] args) throws Exception {

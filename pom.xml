@@ -37,6 +37,16 @@
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
 
+		<!-- spring-boot 添加数据库依赖 -->
+		<dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-jdbc</artifactId>
+		</dependency>
+
 
 		<!--执行页面加载 -->
 		<!-- https://mvnrepository.com/artifact/net.sourceforge.htmlunit/htmlunit -->
@@ -53,9 +63,6 @@
 			<artifactId>spring-boot-starter-thymeleaf</artifactId>
 		</dependency>
 
-		<!-- 爬虫的框架 -->
-		<!-- <dependency> <groupId>cn.edu.hfut.dmic.webcollector</groupId> <artifactId>WebCollector</artifactId> 
-			<version>2.52</version> </dependency> -->
 
 		<!-- 解析html后的数据 -->
 		<!-- https://mvnrepository.com/artifact/org.jsoup/jsoup -->
@@ -65,22 +72,7 @@
 			<version>1.9.2</version>
 		</dependency>
 
-		<!-- 下面这些dependency用于JS数据抓取(selenium)。 如果希望使用这些功能，请将 <scope>provided</scope>删除，并重新构建项目。 
-			注意这些dependency大约有几十M，国内使用最好使用开源中国的maven镜像,详细方法 参见：http://maven.oschina.net/help.html -->
 
-		<!-- https://mvnrepository.com/artifact/org.seleniumhq.selenium/selenium-java -->
-		<dependency>
-			<groupId>org.seleniumhq.selenium</groupId>
-			<artifactId>selenium-java</artifactId>
-			<version>2.44.0</version>
-			<scope>provided</scope>
-			<exclusions>
-				<exclusion>
-					<groupId>org.apache.httpcomponents</groupId>
-					<artifactId>httpclient</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
 
 	</dependencies>
 
