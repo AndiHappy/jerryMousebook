@@ -1,40 +1,50 @@
 package com.model;
 
-public class User {
+import java.io.Serializable;
 
-    private Long id;
-    private String name;
-    private Integer age;
+/**
+ * 缓存的对应，必须实现接口：Serializable 接口
+ * */
+public class User implements Serializable {
 
-    public Long getId() {
-        return id;
-    }
+  private static final long serialVersionUID = -7890654157449731017L;
+  private Long id;
+  private String name;
+  private Integer age;
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+  public User() {}
 
-    public String getName() {
-        return name;
-    }
+  public User(String username, Integer age) {
+    this.name = username;
+    this.age = age;
+  }
 
-    public void setName(String name) {
-        this.name = name;
-    }
+  public Long getId() {
+    return id;
+  }
 
-    public Integer getAge() {
-        return age;
-    }
+  public void setId(Long id) {
+    this.id = id;
+  }
 
-    public void setAge(Integer age) {
-        this.age = age;
-    }
+  public String getName() {
+    return name;
+  }
 
-    @Override public String toString () {
-        return "User{" +
-            "id=" + id +
-            ", name='" + name + '\'' +
-            ", age=" + age +
-            '}';
-    }
+  public void setName(String name) {
+    this.name = name;
+  }
+
+  public Integer getAge() {
+    return age;
+  }
+
+  public void setAge(Integer age) {
+    this.age = age;
+  }
+
+  @Override
+  public String toString() {
+    return "User{" + "id=" + id + ", name='" + name + '\'' + ", age=" + age + '}';
+  }
 }

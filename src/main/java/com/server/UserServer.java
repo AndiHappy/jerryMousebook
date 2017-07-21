@@ -4,6 +4,7 @@ import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
 
+import com.cache.UserCache;
 import com.dao.UserDao;
 import com.model.User;
 
@@ -19,6 +20,9 @@ public class UserServer {
 
   @Resource
   private UserDao dao;
+
+  @Resource
+  private UserCache userCache;
 
   public void create(String name, Integer age) {
     dao.createInprimaryDataSource(name, age);
