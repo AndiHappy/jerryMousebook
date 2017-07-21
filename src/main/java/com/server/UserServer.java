@@ -21,23 +21,24 @@ public class UserServer {
   private UserDao dao;
 
   public void create(String name, Integer age) {
-    dao.create(name, age);
+    dao.createInprimaryDataSource(name, age);
   }
 
   public void deleteByName(String name) {
-    dao.deleteByName(name);
+    // dao.deleteByName(name);
   }
 
   public Integer getAllUsers() {
-    return dao.getAllUsers();
+    // return dao.getAllUsers();
+    return 0;
   }
 
   public void deleteAllUsers() {
-    dao.deleteAllUsers();
+    // dao.deleteAllUsers();
   }
 
   public User getUser(String name) {
-    return dao.getUser(name);
+    return dao.getUserFromFirstDataSource(name);
   }
 
 }

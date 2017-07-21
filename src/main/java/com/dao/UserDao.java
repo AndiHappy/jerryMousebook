@@ -17,28 +17,57 @@ import com.model.User;
 @Component
 public class UserDao {
 
+  // @Autowired
+  // private JdbcTemplate jdbcTemplate;
+
   @Autowired
-  private JdbcTemplate jdbcTemplate;
+  private DataSourceConfig dataSourceCongfig;
 
-  public void create(String name, Integer age) {
-    jdbcTemplate.update("insert into USER(NAME, AGE) values(?, ?)", name, age);
+  public void createInprimaryDataSource(String name, Integer age) {
+    getJdbcTemplate1().update("insert into USER(NAME, AGE) values(?, ?)", name, age);
   }
 
-  public void deleteByName(String name) {
-    jdbcTemplate.update("delete from USER where NAME = ?", name);
+  public void createsecondaryDataSource(String name, Integer age) {
+    getJdbcTemplate2().update("insert into USER(NAME, AGE) values(?, ?)", name, age);
   }
 
-  public Integer getAllUsers() {
-    return jdbcTemplate.queryForObject("select count(1) from USER", Integer.class);
+  public User getUserFromFirstDataSource(String name) {
+    Map<String, Object> map = getJdbcTemplate1().queryForMap("select * from user where name = '"
+        + name + "'");
+    return convert(map);
   }
 
-  public void deleteAllUsers() {
-    jdbcTemplate.update("delete from USER");
+  public User getUserFromSecondDataSource(String name) {
+    Map<String, Object> map = getJdbcTemplate2().queryForMap("select * from user where name = '"
+        + name + "'");
+    return convert(map);
   }
 
-  public User getUser(String name) {
-    Map<String, Object> map = jdbcTemplate.queryForMap("select * from user where name = '" + name
-        + "'");
+  /* public void create(String name, Integer age) {
+   * jdbcTemplate.update("insert into USER(NAME, AGE) values(?, ?)", name, age);
+   * }
+   * 
+   * public void deleteByName(String name) {
+   * jdbcTemplate.update("delete from USER where NAME = ?", name);
+   * }
+   * 
+   * public Integer getAllUsers() {
+   * return jdbcTemplate.queryForObject("select count(1) from USER",
+   * Integer.class);
+   * }
+   * 
+   * public void deleteAllUsers() {
+   * jdbcTemplate.update("delete from USER");
+   * }
+   * 
+   * public User getUser(String name) {
+   * Map<String, Object> map =
+   * jdbcTemplate.queryForMap("select * from user where name = '" + name
+   * + "'");
+   * return convert(map);
+   * } */
+
+  private User convert(Map<String, Object> map) {
     if (map != null) {
       User user = new User();
       user.setAge((Integer) map.get("age"));
@@ -46,6 +75,14 @@ public class UserDao {
       return user;
     }
     return null;
+  }
+
+  public JdbcTemplate getJdbcTemplate1() {
+    return new JdbcTemplate(dataSourceCongfig.primaryDataSource());
+  }
+
+  public JdbcTemplate getJdbcTemplate2() {
+    return new JdbcTemplate(dataSourceCongfig.secondaryDataSource());
   }
 
 }

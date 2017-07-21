@@ -23,9 +23,23 @@ public class BookPubApplicationTests {
   @Resource
   private UserDao userDao;
 
-  @Test
-  public void contextLoads() {
+  /* @Test
+  public void getUser() {
     User value = userDao.getUser("a");
     System.out.println(value.getName());
+  }*/
+
+  @Test
+  public void createUserInDifferentDataSource() {
+    userDao.createInprimaryDataSource("primary", 100);
+    userDao.createsecondaryDataSource("second", 200);
+  }
+
+  @Test
+  public void getUserInDifferentDataSource() {
+    User value = userDao.getUserFromFirstDataSource("primary");
+    System.out.println(value.toString());
+    value = userDao.getUserFromSecondDataSource("second");
+    System.out.println(value.toString());
   }
 }
