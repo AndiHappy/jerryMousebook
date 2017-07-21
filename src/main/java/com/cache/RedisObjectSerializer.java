@@ -20,7 +20,6 @@ public class RedisObjectSerializer implements RedisSerializer<Object> {
     if (isEmpty(bytes)) {
       return null;
     }
-
     try {
       return deserializer.convert(bytes);
     } catch (Exception ex) {
