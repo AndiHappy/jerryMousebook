@@ -2,8 +2,9 @@ package mouse;
 
 import java.io.IOException;
 
+import org.apache.commons.io.IOUtils;
 import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
+import org.jsoup.nodes.Node;
 
 /**
  * @author zhailz
@@ -34,39 +35,70 @@ public class Page extends AbstractPage {
     // 找到需要的内容
     if (this.doc != null) {
       Element element = doc.select("div[id=content]").first();
-      if (element == null) {
-        element = doc.select("div[id=BookText]").first();
-        String text = element.html();
-        text = text.replaceAll("&nbsp;", " ");
-        text = text.replaceAll("<br>", "\r");
-        this.setContent(text);
-      } else {
-        Element p = element.select("p").first();
-        String text = p.html();
-        text = text.replaceAll("&nbsp;", " ");
-        text = text.replaceAll("<br>", "\r");
-        this.setContent(text);
+      if (element != null) {
+        return textInP(element);
+      }
+
+      element = doc.select("div[id=BookText]").first();
+      if (element != null) {
+        return bookText(element);
+      }
+
+      Element elements = doc.select("body").first();
+      if (elements != null) {
+        return bodyTextNodeCollect(elements);
+      }
+
+      throw new RuntimeException("没有能够找到页面的内容");
+    }
+    return null;
+  }
+
+  private String bodyTextNodeCollect(Element elements) {
+    StringBuilder builder = new StringBuilder();
+    if (elements != null) {
+      for (Node element : elements.childNodes()) {
+        if (element.attributes().hasKey("text")) {
+          builder.append(element.toString().replaceAll("&nbsp;", ""));
+          builder.append(IOUtils.LINE_SEPARATOR);
+          builder.append(IOUtils.LINE_SEPARATOR);
+        }
       }
     }
+    return builder.toString();
+  }
 
-    return getContent();
+  private String bookText(Element element) {
+    String text = element.html();
+    text = text.replaceAll("&nbsp;", " ");
+    text = text.replaceAll("<br>", "\\r");
+    this.setContent(text);
+    return text;
+  }
+
+  private String textInP(Element element) {
+    Element p = element.select("p").first();
+    String text = p.html();
+    text = text.replaceAll("&nbsp;", " ");
+    text = text.replaceAll("<br>", "\\r");
+    this.setContent(text);
+    return text;
   }
 
   public static void main(String[] args) throws IOException {
     String va = "我";
     byte[] vav = va.getBytes();
     System.out.println(vav);
-    String url = "http://www.lwxs520.com/books/68/68924/16747180.html";
-    url = "http://cn.bing.com/search?q=%E5%86%9C%E5%AE%B6%E5%AD%90%E7%9A%84%E5%8F%A4%E4%BB%A3%E7%A7%91%E4%B8%BE%E7%94%9F%E6%B4%BB";
+    String url = "http://www.piaotian.com/html/8/8760/5636612.html";
     Page page = new Page(url);
     MouseUtil.waitLoadDoc(page);
-    // System.out.println(page.doc.html());
-    Elements element = page.doc.select("li[class=b_algo]");
-    System.out.println(element.size());
-    for (Element element2 : element) {
-      Element cite = element2.select("cite").first();
-      System.out.println(cite.text());
-    }
+    System.out.println(page.content());
+    // Elements element = page.doc.select("li[class=b_algo]");
+    // System.out.println(element.size());
+    // for (Element element2 : element) {
+    // Element cite = element2.select("cite").first();
+    // System.out.println(cite.text());
+    // }
     // System.out.println(page.text());
     System.exit(0);
   }

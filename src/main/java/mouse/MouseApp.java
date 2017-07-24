@@ -17,10 +17,10 @@ public class MouseApp {
    * 下载某一部小说
    * */
   public static void main(String[] args) throws Exception {
-    String url = "http://www.shuqu8.com/2_2172/";
+    String url = "http://www.piaotian.com/html/8/8760/";
     JsoupDownPage page = new JsoupDownPage(url);
     List<Page> pages = page.getPageValues();
-    File filebook = new File("学霸.txt");
+    File filebook = new File("American.txt");
     for (Page page2 : pages) {
       String title = page2.getTitle();
       if (StringUtils.isNotBlank(title)) {

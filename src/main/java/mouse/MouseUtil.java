@@ -10,7 +10,7 @@ import org.slf4j.Logger;
 public class MouseUtil {
 
   // 缺漏章节数
-  public static final int ErrorPage = 0;
+  public static final int ErrorPage = 10;
 
   // 等待时间
   public static int waitTimeMils = 500000000;
