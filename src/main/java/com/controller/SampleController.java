@@ -1,5 +1,7 @@
 package com.controller;
 
+import javax.annotation.Resource;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -12,6 +14,7 @@ import com.util.ConfigCenter;
 @Controller
 public class SampleController {
 
+  @Resource
   private ConfigCenter configCenter;
 
   /**
