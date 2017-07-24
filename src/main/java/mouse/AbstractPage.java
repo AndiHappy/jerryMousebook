@@ -61,13 +61,13 @@ public abstract class AbstractPage {
       public void run() {
         if (doc == null) {
           try {
-            log.debug("开始初始化:{}", url);
+            log.info("开始初始化:{}", url);
             Connection connection = Jsoup.connect(url);
             connection.timeout(MouseUtil.waitTimeMils);
             Document docValue = connection.get();
             doc = docValue;
             isIni = true;
-            log.debug("{} 初始化完成。", url);
+            log.info("{} 初始化完成。", url);
           } catch (IOException e) {
             log.error("{},初始化出现错误：{}", url, e);
           }

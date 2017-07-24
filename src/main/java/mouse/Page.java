@@ -34,11 +34,19 @@ public class Page extends AbstractPage {
     // 找到需要的内容
     if (this.doc != null) {
       Element element = doc.select("div[id=content]").first();
-      Element p = element.select("p").first();
-      String text = p.html();
-      text = text.replaceAll("&nbsp;", " ");
-      text = text.replaceAll("<br>", "\r");
-      this.setContent(text);
+      if (element == null) {
+        element = doc.select("div[id=BookText]").first();
+        String text = element.html();
+        text = text.replaceAll("&nbsp;", " ");
+        text = text.replaceAll("<br>", "\r");
+        this.setContent(text);
+      } else {
+        Element p = element.select("p").first();
+        String text = p.html();
+        text = text.replaceAll("&nbsp;", " ");
+        text = text.replaceAll("<br>", "\r");
+        this.setContent(text);
+      }
     }
 
     return getContent();

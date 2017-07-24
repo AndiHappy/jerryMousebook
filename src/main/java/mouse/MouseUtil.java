@@ -9,12 +9,16 @@ import org.slf4j.Logger;
 
 public class MouseUtil {
 
-  private static Logger log = org.slf4j.LoggerFactory.getLogger(MouseUtil.class);
+  // 缺漏章节数
+  public static final int ErrorPage = 0;
+
   // 等待时间
-  public static int waitTimeMils = 500000;
+  public static int waitTimeMils = 500000000;
+
+  private static Logger log = org.slf4j.LoggerFactory.getLogger(MouseUtil.class);
 
   protected static ExecutorService executePool = new ThreadPoolExecutor(24, 24, 60L,
-      TimeUnit.MILLISECONDS, new LinkedBlockingQueue<Runnable>(1000));
+      TimeUnit.MILLISECONDS, new LinkedBlockingQueue<Runnable>(5000));
 
   public static void submit(Runnable task) {
     executePool.submit(task);
