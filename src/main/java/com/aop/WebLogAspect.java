@@ -1,22 +1,20 @@
 package com.aop;
 
-import java.util.Arrays;
-
 import javax.servlet.http.HttpServletRequest;
 
-import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
-import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
-import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
+
+import com.util.InfoUtil;
 
 @Aspect
 @Order(5)
@@ -33,7 +31,7 @@ public class WebLogAspect {
   @Pointcut("execution(public * com.controller..*.*(..))")
   public void webLog() {}
 
-  @Before("webLog()")
+  /* @Before("webLog()")
   public void doBefore(JoinPoint joinPoint) throws Throwable {
     startTime.set(System.currentTimeMillis());
     // 接收到请求，记录请求内容
@@ -49,17 +47,25 @@ public class WebLogAspect {
       logger.info("ARGS : " + Arrays.toString(joinPoint.getArgs()));
     }
   }
-
+  
   @AfterReturning(returning = "ret", pointcut = "webLog()")
   public void doAfterReturning(Object ret) throws Throwable {
     // 处理完请求，返回内容
     logger.info("RESPONSE : " + ret);
     logger.info("SPEND TIME : " + (System.currentTimeMillis() - startTime.get()));
-  }
+  } */
 
   @Around(value = "webLog()")
   public Object doAround(ProceedingJoinPoint joinPoint) throws Throwable {
     logger.info("执行之前》》》》》》》》》》》》》》》》》》》》》》》》》");
+
+    // 获取HttpServletRequest
+    ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder
+        .getRequestAttributes();
+    HttpServletRequest request = attributes.getRequest();
+    // 获取要记录的日志内容
+    JSONObject info = InfoUtil.getRequestInfo(request, joinPoint);
+    logger.info(info.toString());
     Object object = joinPoint.proceed();
     logger.info("执行的结果：{}", object.toString());
     logger.info("执行结束《《《《《《《《《《《《《《《《《《《《《《《《《《");

@@ -19,8 +19,6 @@ public class Page extends AbstractPage {
 
   private String title = null;
 
-  private String text = null;
-
   public Page(String url) {
     super(url);
   }
@@ -71,35 +69,45 @@ public class Page extends AbstractPage {
   private String bookText(Element element) {
     String text = element.html();
     text = text.replaceAll("&nbsp;", " ");
-    text = text.replaceAll("<br>", "\\r");
+    text = text.replaceAll("<br>", IOUtils.LINE_SEPARATOR);
     this.setContent(text);
     return text;
   }
 
   private String textInP(Element element) {
     Element p = element.select("p").first();
-    String text = p.html();
-    text = text.replaceAll("&nbsp;", " ");
-    text = text.replaceAll("<br>", "\\r");
-    this.setContent(text);
-    return text;
+    if (p != null) {
+      String text = p.html();
+      text = text.replaceAll("&nbsp;", " ");
+      text = text.replaceAll("<br>", IOUtils.LINE_SEPARATOR);
+      this.setContent(text);
+      return text;
+    } else {
+      element = element.select("div[id=BookText]").first();
+      if (element != null) {
+        return bookText(element);
+      }
+    }
+
+    return null;
   }
 
   public static void main(String[] args) throws IOException {
     String va = "我";
     byte[] vav = va.getBytes();
     System.out.println(vav);
-    String url = "http://www.piaotian.com/html/8/8760/5636612.html";
+    String url = null;
+    Page page = null;
+
+    /* url = "http://www.piaotian.com/html/8/8760/5636612.html";
     Page page = new Page(url);
     MouseUtil.waitLoadDoc(page);
+    System.out.println(page.content());*/
+
+    url = "http://www.snwx8.com/book/139/139211/44894468.html";
+    page = new Page(url);
+    MouseUtil.waitLoadDoc(page);
     System.out.println(page.content());
-    // Elements element = page.doc.select("li[class=b_algo]");
-    // System.out.println(element.size());
-    // for (Element element2 : element) {
-    // Element cite = element2.select("cite").first();
-    // System.out.println(cite.text());
-    // }
-    // System.out.println(page.text());
     System.exit(0);
   }
 

@@ -14,13 +14,15 @@ import org.apache.commons.lang3.StringUtils;
 public class MouseApp {
 
   /**
+   * http://www.snwx8.com/book/139/139211/
+   * http://www.piaotian.com/html/8/8760/
    * 下载某一部小说
    * */
   public static void main(String[] args) throws Exception {
-    String url = "http://www.piaotian.com/html/8/8760/";
+    String url = "http://www.snwx8.com/book/139/139211/";
     JsoupDownPage page = new JsoupDownPage(url);
     List<Page> pages = page.getPageValues();
-    File filebook = new File("American.txt");
+    File filebook = new File("chanpion.txt");
     for (Page page2 : pages) {
       String title = page2.getTitle();
       if (StringUtils.isNotBlank(title)) {
