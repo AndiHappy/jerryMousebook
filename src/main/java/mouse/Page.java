@@ -20,6 +20,12 @@ public class Page extends AbstractPage {
   private String content = null;
 
   private String title = null;
+  
+  private int compareValue = -1;
+  
+  private JsoupDownPage parent = null;
+  
+  private boolean checkNext = false;
 
   public Page(String url) {
     super(url);
@@ -47,7 +53,7 @@ public class Page extends AbstractPage {
           builder.append(IOUtils.LINE_SEPARATOR);
         }
       }
-
+      
       String text = builder.toString();
       if (StringUtils.isNotBlank(text)) {
         this.setContent(text);
@@ -121,5 +127,29 @@ public class Page extends AbstractPage {
   public void setContent(String content) {
     this.content = content;
   }
+
+public JsoupDownPage getParent() {
+	return parent;
+}
+
+public void setParent(JsoupDownPage parent) {
+	this.parent = parent;
+}
+
+public boolean isCheckNext() {
+	return checkNext;
+}
+
+public void setCheckNext(boolean checkNext) {
+	this.checkNext = checkNext;
+}
+
+public int getCompareValue() {
+	return compareValue;
+}
+
+public void setCompareValue(int compareValue) {
+	this.compareValue = compareValue;
+}
 
 }
