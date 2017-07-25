@@ -1,9 +1,11 @@
 package mouse;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.commons.io.IOUtils;
-import org.jsoup.nodes.Element;
+import org.apache.commons.lang3.StringUtils;
 import org.jsoup.nodes.Node;
 
 /**
@@ -32,64 +34,47 @@ public class Page extends AbstractPage {
     MouseUtil.waitLoadDoc(this);
     // 找到需要的内容
     if (this.doc != null) {
-      Element element = doc.select("div[id=content]").first();
-      if (element != null) {
-        return textInP(element);
-      }
-
-      element = doc.select("div[id=BookText]").first();
-      if (element != null) {
-        return bookText(element);
-      }
-
-      Element elements = doc.select("body").first();
-      if (elements != null) {
-        return bodyTextNodeCollect(elements);
-      }
-
-      throw new RuntimeException("没有能够找到页面的内容");
-    }
-    return null;
-  }
-
-  private String bodyTextNodeCollect(Element elements) {
-    StringBuilder builder = new StringBuilder();
-    if (elements != null) {
-      for (Node element : elements.childNodes()) {
-        if (element.attributes().hasKey("text")) {
-          builder.append(element.toString().replaceAll("&nbsp;", ""));
+      /**
+       * 应对不同的网站，采用暴力过滤的形式
+       * */
+      List<Node> testvalue = getAllTextNodes(doc);
+      StringBuilder builder = new StringBuilder();
+      for (Node element : testvalue) {
+        String nodeValue = element.toString();
+        if (StringUtils.isNotBlank(nodeValue) && nodeValue.contains("&nbsp;")) {
+          builder.append(nodeValue.replaceAll("&nbsp;", " "));
           builder.append(IOUtils.LINE_SEPARATOR);
           builder.append(IOUtils.LINE_SEPARATOR);
         }
       }
-    }
-    return builder.toString();
-  }
 
-  private String bookText(Element element) {
-    String text = element.html();
-    text = text.replaceAll("&nbsp;", " ");
-    text = text.replaceAll("<br>", IOUtils.LINE_SEPARATOR);
-    this.setContent(text);
-    return text;
-  }
-
-  private String textInP(Element element) {
-    Element p = element.select("p").first();
-    if (p != null) {
-      String text = p.html();
-      text = text.replaceAll("&nbsp;", " ");
-      text = text.replaceAll("<br>", IOUtils.LINE_SEPARATOR);
-      this.setContent(text);
-      return text;
-    } else {
-      element = element.select("div[id=BookText]").first();
-      if (element != null) {
-        return bookText(element);
+      String text = builder.toString();
+      if (StringUtils.isNotBlank(text)) {
+        this.setContent(text);
+        return text;
+      } else {
+        throw new RuntimeException("没有能够找到页面的内容");
       }
     }
-
     return null;
+  }
+
+  /**
+   * 拿到所有的textNode，进行逐个的过滤
+   * */
+  private List<Node> getAllTextNodes(Node doc) {
+    List<Node> result = new ArrayList<Node>();
+    List<Node> tmp = doc.childNodes();
+    if (tmp != null && tmp.size() > 0) {
+      for (Node node : tmp) {
+        if (node.nodeName().equalsIgnoreCase("#text")) {
+          result.add(node);
+        } else {
+          result.addAll(getAllTextNodes(node));
+        }
+      }
+    }
+    return result;
   }
 
   public static void main(String[] args) throws IOException {
@@ -99,12 +84,22 @@ public class Page extends AbstractPage {
     String url = null;
     Page page = null;
 
-    /* url = "http://www.piaotian.com/html/8/8760/5636612.html";
-    Page page = new Page(url);
+    url = "http://www.piaotian.com/html/8/8760/5636612.html";
+    page = new Page(url);
     MouseUtil.waitLoadDoc(page);
-    System.out.println(page.content());*/
+    System.out.println(page.content());
 
     url = "http://www.snwx8.com/book/139/139211/44894468.html";
+    page = new Page(url);
+    MouseUtil.waitLoadDoc(page);
+    System.out.println(page.content());
+
+    url = "http://www.brquge.com/read/4/4939/15462931.html";
+    page = new Page(url);
+    MouseUtil.waitLoadDoc(page);
+    System.out.println(page.content());
+
+    url = "http://www.sqsxs.com/book/0/1/5.html";
     page = new Page(url);
     MouseUtil.waitLoadDoc(page);
     System.out.println(page.content());

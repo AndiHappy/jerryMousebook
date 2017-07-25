@@ -70,6 +70,8 @@ public abstract class AbstractPage {
             log.info("{} 初始化完成。", url);
           } catch (IOException e) {
             log.error("{},初始化出现错误：{}", url, e);
+            Thread.currentThread().interrupt();
+            throw new RuntimeException(e);
           }
         }
       }

@@ -16,13 +16,14 @@ public class MouseApp {
   /**
    * http://www.snwx8.com/book/139/139211/
    * http://www.piaotian.com/html/8/8760/
+   * http://www.sqsxs.com/book/8/8436/
    * 下载某一部小说
    * */
   public static void main(String[] args) throws Exception {
-    String url = "http://www.snwx8.com/book/139/139211/";
+    String url = "http://www.sqsxs.com/book/8/8436/";
     JsoupDownPage page = new JsoupDownPage(url);
     List<Page> pages = page.getPageValues();
-    File filebook = new File("chanpion.txt");
+    File filebook = new File("nerios.txt");
     for (Page page2 : pages) {
       String title = page2.getTitle();
       if (StringUtils.isNotBlank(title)) {
