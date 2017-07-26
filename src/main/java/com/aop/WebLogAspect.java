@@ -16,6 +16,9 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 
 import com.util.InfoUtil;
 
+/**
+ * 切面，切点，对应的函数
+ * */
 @Aspect
 @Order(5)
 @Component

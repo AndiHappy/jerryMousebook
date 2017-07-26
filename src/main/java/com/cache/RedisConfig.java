@@ -9,6 +9,9 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 import com.model.User;
 
+/**
+ * Redis的配置
+ * */
 @Configuration
 public class RedisConfig {
 

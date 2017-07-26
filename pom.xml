@@ -88,7 +88,13 @@
 		<dependency>
 			<groupId>org.json</groupId>
 			<artifactId>json</artifactId>
-			<version>20090211</version><!--$NO-MVN-MAN-VER$-->
+			<version>20090211</version><!--$NO-MVN-MAN-VER$ -->
+		</dependency>
+
+		<!-- spring-security -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-security</artifactId>
 		</dependency>
 
 	</dependencies>

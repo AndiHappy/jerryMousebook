@@ -10,6 +10,9 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.jdbc.core.JdbcTemplate;
 
+/**
+ * 多个数据源的配置
+ * */
 @Configuration
 public class DataSourceConfig {
 
