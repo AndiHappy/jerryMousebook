@@ -24,7 +24,6 @@ public class SampleController {
    *               org.springframework.web.servlet.mvc.method.annotation.RequestResponseBodyMethodProcessor
    *               没有的情况是：
    *               org.springframework.web.servlet.mvc.method.annotation.ViewNameMethodReturnValueHandler
-   * 
    *               影响的方法名称是：
    *               org.springframework.web.method.support.HandlerMethodReturnValueHandlerComposite.selectHandler(Object, MethodParameter)
    */
@@ -37,6 +36,11 @@ public class SampleController {
   @RequestMapping("/hello")
   public String hello() {
     return "index";
+  }
+  
+  @RequestMapping("/login")
+  public String login() {
+    return "login";
   }
 
   /**

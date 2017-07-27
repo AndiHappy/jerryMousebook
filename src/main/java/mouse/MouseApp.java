@@ -16,12 +16,11 @@ import org.apache.commons.lang3.StringUtils;
 public class MouseApp {
 
 	public static void main(String[] args) throws Exception {
-		String url = "http://www.brquge.com/modules/article/reader.php?aid=7751";
+		String url = "http://www.fenghuage.com/21999/";
 		JsoupDownPage page = new JsoupDownPage(url);
-		TreeMap<Integer, Page> pages = page.getPageValues();
-		File filebook = new File("hose.txt");
-		for (Entry<Integer, Page> entry : pages.entrySet()) {
-			Page page2 = entry.getValue();
+		List<Page> pages = page.getPageValues();
+		File filebook = new File("entertainment.txt");
+		for (Page page2 : pages) {
 			String title = page2.getTitle();
 			if (StringUtils.isNotBlank(title)) {
 				FileUtil.saveValueToFile(filebook, title, true);

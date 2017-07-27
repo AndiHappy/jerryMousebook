@@ -48,9 +48,13 @@ public class Page extends AbstractPage {
       for (Node element : testvalue) {
         String nodeValue = element.toString();
         if (StringUtils.isNotBlank(nodeValue) && nodeValue.contains("&nbsp;")) {
-          builder.append(nodeValue.replaceAll("&nbsp;", " "));
-          builder.append(IOUtils.LINE_SEPARATOR);
-          builder.append(IOUtils.LINE_SEPARATOR);
+          String value = nodeValue.replaceAll("&nbsp;", "");
+          value = value.replaceAll("&gt;", "");
+          if(StringUtils.isNotBlank(value)) {
+            builder.append(value);
+            builder.append(IOUtils.LINE_SEPARATOR);
+            builder.append(IOUtils.LINE_SEPARATOR);
+          }
         }
       }
       

@@ -17,7 +17,7 @@ import org.jsoup.select.Elements;
  */
 public class JsoupDownPage extends AbstractPage {
 
-	private TreeMap<Integer,Page> pageValues = new TreeMap<Integer,Page>();
+	private List<Page> pageValues = new ArrayList<Page>();
 
 	public JsoupDownPage(String url) {
 		super(url);
@@ -40,10 +40,14 @@ public class JsoupDownPage extends AbstractPage {
 					if (pagetmp == null) {
 						pagetmp = new Page(abshref);
 						pagetmp.setTitle(text);
-						//根据text分析出具体的章节数
+						/**
+						 * 根据text分析出具体的章节数
+						 * 但是具体的章节是可以从头开始的，这样就比较的混乱了
+						 * 只能按照默认的顺序进行安排
+						 * */
 						int compare = ChineseNumber.parseNumber(text);
 						pagetmp.setCompareValue(compare);
-						pageValues.put(pagetmp.getCompareValue(),pagetmp);
+						pageValues.add(pagetmp);
 						pages.put(abshref, pagetmp);
 					} else {
 						errorFlag++;
@@ -62,11 +66,11 @@ public class JsoupDownPage extends AbstractPage {
 		}
 	}
 
-	public TreeMap<Integer, Page> getPageValues() {
+	public List<Page> getPageValues() {
 		return pageValues;
 	}
 
-	public void setPageValues(TreeMap<Integer, Page> pageValues) {
+	public void setPageValues(List<Page> pageValues) {
 		this.pageValues = pageValues;
 	}
 
