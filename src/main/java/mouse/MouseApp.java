@@ -16,10 +16,10 @@ import org.apache.commons.lang3.StringUtils;
 public class MouseApp {
 
 	public static void main(String[] args) throws Exception {
-		String url = "http://www.piaotian.com/html/8/8722/";
+		String url = "http://www.snwx8.com/book/187/187257/";
 		JsoupDownPage page = new JsoupDownPage(url);
 		List<Page> pages = page.getPageValues();
-		File filebook = new File("bestmovior.txt");
+		File filebook = new File("live.txt");
 		for (Page page2 : pages) {
 			String title = page2.getTitle();
 			if (StringUtils.isNotBlank(title)) {

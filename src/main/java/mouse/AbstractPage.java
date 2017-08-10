@@ -17,6 +17,8 @@ import org.slf4j.Logger;
 public abstract class AbstractPage {
 
   private Logger log = org.slf4j.LoggerFactory.getLogger(getClass());
+  public static String userAgent ="Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/53.0.2785.116 Safari/537.36"; 
+
 
   protected String url = null;
   protected Document doc;
@@ -64,6 +66,7 @@ public abstract class AbstractPage {
             log.info("开始初始化:{}", url);
             Connection connection = Jsoup.connect(url);
             connection.timeout(MouseUtil.waitTimeMils);
+            connection.userAgent(userAgent);
             Document docValue = connection.get();
             doc = docValue;
             isIni = true;

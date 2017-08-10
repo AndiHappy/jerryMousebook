@@ -35,7 +35,7 @@ public class JsoupDownPage extends AbstractPage {
 				Element link = links.get(i);
 				String abshref = link.attr("abs:href");
 				String text = link.text();
-				if (text.contains("章")) {
+				if (text.contains("章") || text.contains(".")) {
 					Page pagetmp = pages.get(abshref);
 					if (pagetmp == null) {
 						pagetmp = new Page(abshref);
