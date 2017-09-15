@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.TreeMap;
+import java.util.regex.Pattern;
 
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
@@ -35,7 +36,7 @@ public class JsoupDownPage extends AbstractPage {
 				Element link = links.get(i);
 				String abshref = link.attr("abs:href");
 				String text = link.text();
-				if (text.contains("章") || text.contains(".")) {
+				if (text.contains("章") || text.contains(".") || Pattern.compile("[0-9]{1,}").matcher(text).find()) {
 					Page pagetmp = pages.get(abshref);
 					if (pagetmp == null) {
 						pagetmp = new Page(abshref);
